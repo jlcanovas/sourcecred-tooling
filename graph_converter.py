@@ -62,6 +62,10 @@ def convert_graph(input_graph_path, output_path, output_format):
     for cred_edge in graph[1]['orderedEdges']:
         igraph_edge_atts = {'address': '-'.join(cred_edge['address']),
                             'timestamp': cred_edge['timestamp'],
+                            'backwardsWeight': cred_edge['rawWeight']['backwards'], 
+                            'forwardsWeight': cred_edge['rawWeight']['forwards'],
+                            'backwardFlow': cred_edge['totalCred']['backwardFlow'],
+                            'forwardFlow': cred_edge['totalCred']['forwardFlow'],  
                             #'credOverTime': cred_edge['credOverTime'] # To play with cred
                             }
         try:
