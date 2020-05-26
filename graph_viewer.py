@@ -37,7 +37,7 @@ def show_graph(input_graph_path):
     graph_style = {"vertex_size": 20,
                    "vertex_color": [node_colors[node_type] for node_type in g.vs["type"]],
                    "vertex_label": g.vs["label"],
-                   "edge_width": 1,
+                   "edge_width": [1 * edge_flow for edge_flow in g.es['forwardFlow']],
                    "layout": g.layout("fr"),
                    "bbox": (1000, 1000),
                    "margin": 100}
