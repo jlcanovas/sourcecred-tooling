@@ -6,4 +6,4 @@ by [SourceCred](https://sourcecred.io)
 ## Scripts
 
 * ```graph_converter```: Simple script to convert CRED graphs into other kind of graphs using the igraph-python library
-
+* ```graph_viewer```: Simple script to show igraph-supported graph files
