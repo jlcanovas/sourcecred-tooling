@@ -27,12 +27,10 @@ Main options:
 USAGE = 'graph_converter.py -i CRED_GRAPH_PATH -o OUTPUT_GRAPH -f OUTPUT_GRAPH_FORMAT'
 
 
-def convert_graph(input_graph_path, output_path, output_format):
+def convert_graph(input_graph_path):
     """
     Converts a CRED-like graph into a graph format supported by the igraph library
     :param input_graph_path: The path to the CRED graph to convert
-    :param output_path: The path where the resulting graph will be saved
-    :param output_format: The format of the resulting graph
     """
 
     with open(input_graph_path, encoding="utf8") as f:
@@ -70,7 +68,29 @@ def convert_graph(input_graph_path, output_path, output_format):
     # Reporting the number of dangling edges found
     print(f"Dangling edges found: {len(dangling_edges)}")
 
-    Graph.save(g, output_path, format=output_format)
+    return g
+
+
+def convert_to_JSON(graph):
+    """Converts an igraph into a D3-compatible json file
+    :returns a json Object
+    """
+    # Traversing nodes
+    nodes = []
+    for node in graph.vs:
+        nodes.append({"id": node["index"], "label": node["label"], "size": 1})
+
+    # Traversing edges
+    edges = []
+    for edge in graph.es:
+        edges.append({"source": edge.source, "target": edge.target, "id": str(edge.source) + "+" + str(edge.target)})
+
+    json_g = {
+        "nodes": nodes,
+        "edges": edges
+    }
+
+    return json_g
 
 
 def main(argv):
@@ -94,7 +114,14 @@ def main(argv):
         elif opt in ('-f'):
             output_format = arg
 
-    convert_graph(input_graph_path, output_path, output_format)
+    g = convert_graph(input_graph_path)
+
+    if output_format != "json":
+        Graph.save(g, output_path, format=output_format)
+    elif output_format == "json":
+        json_g = convert_to_JSON(g)
+        with open(output_path, 'w') as f:
+            json.dump(json_g, f)
 
 
 if __name__ == "__main__":
