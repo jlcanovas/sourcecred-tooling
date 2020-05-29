@@ -47,6 +47,7 @@ def convert_graph(input_graph_path):
         igraph_node_atts = {'label': cred_node['address'][2]+'-'+cred_node['address'][-1][:7],
                             'type': cred_node['address'][2],
                             'timestamp': cred_node['timestamp'] if cred_node['timestamp'] is not None else 0,
+                            'totalCred': cred_node['totalCred']['cred'],
                             'index': idx,
                             #'credOverTime': cred_node['credOverTime'] # To play with cred
                             }
@@ -80,19 +81,28 @@ def convert_to_JSON(graph):
     """Converts an igraph into a D3-compatible json file
     :returns a json Object
     """
-    # Traversing nodes
+
+    node_colors = {'COMMIT': '#F9F781', 'COMMENT': '#EF84EC', 'ISSUE': '#DE8906', 'USERLIKE': '#F64B4B',
+                   'PULL': '#5775FF', 'REPO': '#46CD17'}
+
     nodes = []
     for node in graph.vs:
-        nodes.append({"id": node["index"], "label": node["label"], "size": 1})
+        nodes.append({'id': node['index'],
+                      'label': node['label'],
+                      'size': node['totalCred'],
+                      'color': node_colors[node['type']]
+                      })
 
-    # Traversing edges
     edges = []
     for edge in graph.es:
-        edges.append({"source": edge.source, "target": edge.target, "id": str(edge.source) + "+" + str(edge.target)})
+        edges.append({'source': edge.source,
+                      'target': edge.target,
+                      'width': edge['forwardFlow'],
+                      'id': str(edge.source) + "+" + str(edge.target)})
 
     json_g = {
-        "nodes": nodes,
-        "edges": edges
+        'nodes': nodes,
+        'edges': edges
     }
 
     return json_g

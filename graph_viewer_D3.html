@@ -31,18 +31,14 @@
 </div>
 
 <script>
-    console.log("hola")
     // Gathering main data
     d3.json("graph.json", function(data) {
-        console.log("hoho")
-        console.log(data)
-
         d3.selectAll("svg").remove;  // cleaning svg element
 
         // The margins. No need (yet) to make these values as global variables.
         var margin = {top: 10, right: 30, bottom: 30, left: 40},
-            width = 1108 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+            width = 1140 - margin.left - margin.right,
+            height = 800 - margin.top - margin.bottom;
 
         // Appending the svg object to the body of the page
         var svg = d3.select("#d3graph")
@@ -53,25 +49,28 @@
         // Separating the main group to enable zooming (see zoomHandler)
         var g = svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
         var zoomHandler = d3.zoom()
             .on("zoom", function(d) { g.attr("transform", d3.event.transform)} );
         zoomHandler(svg);
 
-        // Creating the linear scale to distribute the size of the nodes
+        // Creating the linear scale to distribute the size of the nodes and edges
         var nodeSizeScale = d3.scaleLinear();
         nodeSizeScale
-            .domain([0, d3.max(data.nodes, n => n.size)])
+            .domain([0, d3.max(data.nodes, n => n.size)]) // Scale according to size node attribute
             .range([5, 50]);
+        var edgeSizeScale = d3.scaleLinear();
+        edgeSizeScale
+            .domain([0, d3.max(data.edges, e => e.width)]) // Scale according to width edge attribute
+            .range([1, 5]);
 
         // The edges of the graph
-        // Color is hardcoded
         var link = g
             .selectAll("line")
             .data(data.edges)
             .enter()
             .append("line")
-            .style("stroke", "#aaa")
+            .style("stroke", "#aaa") // color is hardcoded
+            .style("stroke-width", d => edgeSizeScale(d.width))
 
         // The nodes of the graph
         // Color and stroke are hardcoded. The size is calculated according to the previous scale
@@ -92,6 +91,15 @@
                 .on("drag",  function(d) { d.fx = d3.event.x; d.fy = d3.event.y; })
                 .on("end",   function(d) { if (!d3.event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
 
+        // Adding node names
+        node.append("text")
+            .attr("x", d => d.cx)
+            .attr("y", d => d.cy)
+            .attr("dx", 12)
+            .attr("dy", ".35em")
+            .attr("font-size", "10px")
+            .attr("fill", "#000000")
+            .text(d => d.label);
 
         // Decorating each node with a title, which includes the name of the node and the number of
         // messages (i.e., the size of the node)
@@ -107,7 +115,7 @@
             .force("charge", d3.forceManyBody().strength(0).distanceMax(250))  // Max distance allowed between nodes
             .force("center", d3.forceCenter(width / 2, height / 2))            // Forcing the graph to be shown in the center
             .force('collision', d3.forceCollide().radius(function(d) {         // Forcing nodes to collide (not overlap) but
-                return nodeSizeScale(d.size)+25                                  // at radius+25 distance :)
+                return nodeSizeScale(d.size)+25                                // at radius+25 distance :)
             }))
             .on("tick", ticked)
 
