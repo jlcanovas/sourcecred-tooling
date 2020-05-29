@@ -21,7 +21,7 @@
 
 <div class="container">
     <div class="header">
-        <h1>Graph Viewer</h1>
+        <h1>D3-based Cred Graph Viewer</h1>
     </div>
 
     <div class="graph">
@@ -38,7 +38,7 @@
         // The margins. No need (yet) to make these values as global variables.
         var margin = {top: 10, right: 30, bottom: 30, left: 40},
             width = 1140 - margin.left - margin.right,
-            height = 800 - margin.top - margin.bottom;
+            height = 900 - margin.top - margin.bottom;
 
         // Appending the svg object to the body of the page
         var svg = d3.select("#d3graph")
@@ -75,14 +75,13 @@
             .style("stroke-width", d => edgeSizeScale(d.width))
 
         // The nodes of the graph
-        // Color and stroke are hardcoded. The size is calculated according to the previous scale
-        // Added support for drag&drop
-
-        var node = g
-            .selectAll("circle")
+        var node = g.append("g")
+            .attr("class", "nodes")
+            .selectAll("g")
             .data(data.nodes)
-            .enter()
-            .append("circle")
+            .enter().append("g")
+
+        var circles = node.append("circle")
             .attr("r", d => nodeSizeScale(d.size))
             .style("fill", d => nodeColorScale(d.type))
             .style("stroke", "#000000")
@@ -95,18 +94,16 @@
                 .on("end",   function(d) { if (!d3.event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
 
         // Adding node names
-        node.append("text")
-            .attr("x", d => d.cx)
-            .attr("y", d => d.cy)
-            .attr("dx", 12)
-            .attr("dy", ".35em")
+        var names = node.append("text")
+            .attr("dx", d => nodeSizeScale(d.size)+2)
+            .attr("dy", 3)
             .attr("font-size", "10px")
             .attr("fill", "#000000")
             .text(d => d.label);
 
         // Decorating each node with a title, which includes the name of the node and the number of
         // messages (i.e., the size of the node)
-        node.append("title")
+        var titles = node.append("title")
             .text(d => d.label);
 
         // Main force-directed algorithm of D3 to render the graph
@@ -130,8 +127,9 @@
                 .attr("x2", d => d.target.x)
                 .attr("y2", d => d.target.y);
             node
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y);
+                .attr("transform", function(d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                })
         }
     });
 
