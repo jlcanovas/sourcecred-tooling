@@ -82,15 +82,12 @@ def convert_to_JSON(graph):
     :returns a json Object
     """
 
-    node_colors = {'COMMIT': '#F9F781', 'COMMENT': '#EF84EC', 'ISSUE': '#DE8906', 'USERLIKE': '#F64B4B',
-                   'PULL': '#5775FF', 'REPO': '#46CD17'}
-
     nodes = []
     for node in graph.vs:
         nodes.append({'id': node['index'],
                       'label': node['label'],
                       'size': node['totalCred'],
-                      'color': node_colors[node['type']]
+                      'type': node['type']
                       })
 
     edges = []

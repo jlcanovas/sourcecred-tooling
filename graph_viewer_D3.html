@@ -63,6 +63,8 @@
             .domain([0, d3.max(data.edges, e => e.width)]) // Scale according to width edge attribute
             .range([1, 5]);
 
+        var nodeColorScale = d3.scaleOrdinal(d3.schemeCategory20);
+
         // The edges of the graph
         var link = g
             .selectAll("line")
@@ -75,13 +77,14 @@
         // The nodes of the graph
         // Color and stroke are hardcoded. The size is calculated according to the previous scale
         // Added support for drag&drop
+
         var node = g
             .selectAll("circle")
             .data(data.nodes)
             .enter()
             .append("circle")
             .attr("r", d => nodeSizeScale(d.size))
-            .style("fill", function(d) { if(d.color == undefined) return "#000000"; else return d.color})
+            .style("fill", d => nodeColorScale(d.type))
             .style("stroke", "#000000")
             .call(d3.drag()
                 .on("start", function(d) {
