@@ -31,7 +31,7 @@
 </div>
 
 <script>
-    // Gathering main data
+    // Gathering main data (using hardcoded input file)
     d3.json("graph.json", function(data) {
         d3.selectAll("svg").remove;  // cleaning svg element
 
@@ -62,10 +62,10 @@
         edgeSizeScale
             .domain([0, d3.max(data.edges, e => e.width)]) // Scale according to width edge attribute
             .range([1, 5]);
-
+        // Color scale for nodes
         var nodeColorScale = d3.scaleOrdinal(d3.schemeCategory20);
 
-        // The edges of the graph
+        // EDGES
         var link = g
             .selectAll("line")
             .data(data.edges)
@@ -74,13 +74,14 @@
             .style("stroke", "#aaa") // color is hardcoded
             .style("stroke-width", d => edgeSizeScale(d.width))
 
-        // The nodes of the graph
+        // NODES
         var node = g.append("g")
             .attr("class", "nodes")
             .selectAll("g")
             .data(data.nodes)
             .enter().append("g")
 
+        // Adding circles for nodes
         var circles = node.append("circle")
             .attr("r", d => nodeSizeScale(d.size))
             .style("fill", d => nodeColorScale(d.type))
@@ -101,8 +102,7 @@
             .attr("fill", "#000000")
             .text(d => d.label);
 
-        // Decorating each node with a title, which includes the name of the node and the number of
-        // messages (i.e., the size of the node)
+        // Decorating each node with a title
         var titles = node.append("title")
             .text(d => d.label);
 
