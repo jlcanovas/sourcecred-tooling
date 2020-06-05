@@ -1,3 +1,5 @@
 test_data
 *.gml
 *.iml
+*.json
+test.py
