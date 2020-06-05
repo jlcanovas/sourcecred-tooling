@@ -36,10 +36,12 @@ def convert_graph(input_path):
     with open(input_path, encoding="utf8") as f:
         cred_file = json.load(f)
 
+    # Locating important elements in the graph
     cred_data = cred_file[1]['credData']
     graph = cred_file[1]['weightedGraph'][1]['graphJSON'][1]
     cred_node_addresses = graph['sortedNodeAddresses']
 
+    # Summary of edges/nodes and also a reminder about dangling edges
     print(f'Found cred summary data for {len(cred_data["nodeSummaries"])} nodes and {len(cred_data["edgeSummaries"])} edges')
     print(f'The graph has {len(graph["nodes"])} nodes, {len(graph["edges"])} edges and {len(graph["sortedNodeAddresses"])} node addresses')
     print(f'Dangling edges expected: {len(graph["edges"]) - len(cred_data["edgeSummaries"])}')
@@ -61,6 +63,7 @@ def convert_graph(input_path):
     dangling_edges = []
     idx = 0
     for cred_edge in graph['edges']:
+        # Checking if the edges is a dangling one. If so, we skip.
         if len(g.vs.select(name_eq=str(cred_edge['srcIndex']))) + len(g.vs.select(name_eq=str(cred_edge['dstIndex']))) < 2:
             dangling_edges.append({"srcIndex": cred_edge['srcIndex'], "dstIndex": cred_edge['dstIndex']})
             continue
@@ -75,7 +78,6 @@ def convert_graph(input_path):
 
     # Reporting the number of dangling edges found
     print(f"Dangling edges found: {len(dangling_edges)}")
-
 
     return g
 
