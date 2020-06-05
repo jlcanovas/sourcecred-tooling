@@ -126,13 +126,7 @@ def main(argv):
             output_format = arg
 
     g = convert_graph(input_graph_path)
-
-    if output_format != "json":
-        Graph.save(g, output_path, format=output_format)
-    elif output_format == "json":
-        json_g = convert_to_JSON(g)
-        with open(output_path, 'w') as f:
-            json.dump(json_g, f)
+    Graph.save(g, output_path, format=output_format)
 
 
 if __name__ == "__main__":
