@@ -24,7 +24,7 @@ Main options:
 -o   - The path for the generated graph
 -f   - Format of the generated graph (gml, graphml, dot, svg...)
 """
-USAGE = 'graph_converter.py -i CRED_GRAPH_PATH -o OUTPUT_GRAPH -f OUTPUT_GRAPH_FORMAT'
+USAGE = 'convert_cred_to_graph.py -i CRED_GRAPH_PATH -o OUTPUT_GRAPH -f OUTPUT_GRAPH_FORMAT'
 
 
 def convert_graph(input_graph_path, output_path, output_format):

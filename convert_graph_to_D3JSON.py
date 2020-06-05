@@ -26,7 +26,7 @@ def convert_to_JSON(graph):
 
     nodes = []
     for node in graph.vs:
-        nodes.append({'id': node['index'],
+        nodes.append({'id': node['name'],
                       'label': node['label'],
                       'size': node['totalCred'],
                       'type': node['type']
@@ -34,8 +34,8 @@ def convert_to_JSON(graph):
 
     edges = []
     for edge in graph.es:
-        edges.append({'source': edge.source,
-                      'target': edge.target,
+        edges.append({'source': graph.vs[edge.source]['name'],
+                      'target': graph.vs[edge.target]['name'],
                       'width': edge['forwardFlow'],
                       'id': str(edge.source) + "+" + str(edge.target)})
 
