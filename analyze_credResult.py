@@ -1,5 +1,12 @@
 #!/usr/bin/python
-##
+#
+# Generates a CSV file from credResult graphs. The CSV is printed in STDOUT. Useful for further analysis in other tools
+#
+# The CSV file follows this format (example):
+#    id,cred,type,name
+#    12,21.2,COMMIT,ssjw22
+#    17,12.4,ISSUE,2
+#
 # Author: Javier Canovas (me@jlcanovas.es)
 #
 
@@ -15,7 +22,11 @@ Main options:
 USAGE = 'analyze_credResult.py -g GRAPH_JSON_FILE'
 
 
-def extract_node_name(node):
+def extract_node_name(node_address):
+    """Given a graph node address, returns the label. For the sake of clarity, COMMENT node addresses return empty.
+    :param node_address: The node address
+    :return: The label
+    """
     node_type = node[2]
     if node_type == "COMMIT":
         return node[3][-7:]
@@ -33,6 +44,7 @@ def extract_node_name(node):
 
 def main(argv):
     if len(argv) == 0:
+        print(USAGE)
         sys.exit(0)
 
     try:
@@ -48,16 +60,16 @@ def main(argv):
         elif opt in '-g':
             input_graph = arg
 
+    # Let's go directly to the point (no need for helper functions)
     with open(input_graph, encoding="utf8") as f:
         cred = json.load(f)
 
-    #print(f'Cred data for {len(cred[1]["credData"]["nodeSummaries"])} nodes and {len(cred[1]["credData"]["edgeSummaries"])} edges')
-    #print(f'Graph has {len(cred[1]["weightedGraph"][1]["graphJSON"][1]["nodes"])} nodes, {len(cred[1]["weightedGraph"][1]["graphJSON"][1]["edges"])} edges and {len(cred[1]["weightedGraph"][1]["graphJSON"][1]["sortedNodeAddresses"])} node addresses')
-
+    # Useful locations in the graph
     graph_nodes = cred[1]["weightedGraph"][1]["graphJSON"][1]["nodes"]
     graph_node_addresses = cred[1]["weightedGraph"][1]["graphJSON"][1]["sortedNodeAddresses"]
     cred_nodes = cred[1]["credData"]["nodeSummaries"]
 
+    # Printing the CSV
     print(f'id,cred,type,name')
     for [n, graph_node] in enumerate(graph_nodes):
         cred_node = cred_nodes[n]["cred"]
