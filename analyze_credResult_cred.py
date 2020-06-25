@@ -19,7 +19,7 @@ Usage of this script
 Main options:
 -g   - The path of the cred graph
 """
-USAGE = 'analyze_credResult.py -g GRAPH_JSON_FILE'
+USAGE = 'analyze_credResult_cred.py -g GRAPH_JSON_FILE'
 
 
 def extract_node_name(node_address):
