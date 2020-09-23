@@ -10,6 +10,7 @@ by [SourceCred](https://sourcecred.io)
   file follows [the credResult.js type definition](https://github.com/sourcecred/sourcecred/blob/2fd32dd78547a101c33d2c0112962b8b9f2503fb/src/analysis/credResult.js#L30-L42)
 * ```convert_outputV2_to_graph```: Converts CRED graphs (`output.json` files) into other kind of graphs using the igraph-python library. This version of the script supports the new output v2 format added by [this commit](https://github.com/sourcecred/sourcecred/commit/b985214fa2754ca61c62133059529e3060de954d)
 * ```convert_graph_to_D3JSON```: Convert graphs (formats supported by igraph-python library, i.e., the output of the previous scripts) into a D3-comaptible JSON
+* ```convert_graph_to_graph```: Converts CRED graphs (`graph.json` files) into other kind of graphs using the igraph-python library
 
 ## Viewers
 
